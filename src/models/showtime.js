@@ -7,13 +7,18 @@ const showtimeSchema = new Schema({
     required: true,
     trim: true,
   },
-  startDate: {
-    type: Date,
+  seats: [{ type: Schema.Types.ObjectId, ref: "cine" }],
+  ticketPrice: {
+    type: Number,
     required: true,
   },
-  endDate: {
-    type: Date,
+  seatsAvailable: {
+    type: Number,
     required: true,
+  },
+  startDate: {
+    type: Date,
+    // required: true,
   },
   movieId: {
     type: Schema.Types.ObjectId,

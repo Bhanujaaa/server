@@ -4,33 +4,36 @@ const { Schema } = mongoose;
 const reservationSchema = new Schema({
   date: {
     type: Date,
-    // required: true,
   },
-  startAt: {
-    type: String,
-    // required: true,
-    trim: true,
-  },
-  seats: {
-    type:Number,
-    required: true,
-  },
-  ticketPrice: {
-    type: Number,
-    required: true,
-  },
+ showId:{
+   type:String,
+   type:Schema.Types.ObjectId,
+  ref:'Showtime',
+  // required:true
+ },
+ seats:{
+   type:Number
+ },
   total: {
     type: Number,
     required: true,
   },
   movieId: {
+    type:String,
     type: Schema.Types.ObjectId,
     ref: 'Movie',
-    // required: true,
+    required: true,
   },
   cinemaId: {
+    type:String,
     type: Schema.Types.ObjectId,
     ref: 'Cinema',
+    required: true,
+  },
+  UserId: {
+    type:String,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     // required: true,
   },
   username: {

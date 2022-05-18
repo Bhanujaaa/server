@@ -15,35 +15,27 @@ var CinemaSeatSchema = new Schema({
     },
 });
 const cinemaSchema = new Schema({
-  moviename:{
-    type:String,
-    required:true,
+  movieId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Movie',
+    required: true,
   },
   name: {
     type: String,
     required: true,
-    trim: true,
+   
   },
-  ticketPrice: {
-    type: Number,
-    required: true,
-  },
+ 
   city: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref:'Location', 
     required: true,
-    trim: true,
-    lowercase: true,
-  },
-  seats: [{ type: Schema.Types.ObjectId, ref: "cine",required:true }],
 
-  seatsWanted: {
-    type: [Schema.Types.Mixed],
-    // required: true,
   },
-  seatsAvailable: {
-    type: Number,
-    required: true,
-  },
+ 
+address:{
+  type:String,
+},
   image: {
     type: String,
   },

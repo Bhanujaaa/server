@@ -2,8 +2,9 @@ const express = require('express');
 const auth = require('../middlewares/auth');
 const City=require('../models/location')
 const router = new express.Router();
+const Cinema = require('../models/cinema');
 
-router.get('/getCity', async (req, res)=> {
+router.get('/getCity', auth.simple,async (req, res)=> {
     try {
         const city = await City.find({});
         res.send(city);
@@ -12,7 +13,7 @@ router.get('/getCity', async (req, res)=> {
       }
 });
 
-router.get('/getCity/:id', async(req, res)=> {
+router.get('/getCity/:id',auth.simple, async(req, res)=> {
     const _id = req.params.id;
 
     try {
@@ -24,8 +25,8 @@ router.get('/getCity/:id', async(req, res)=> {
     }
 });
 
-router.post('/addCity', async(req, res)=>{
- const city = new City(req.body);
+router.post('/addCity', auth.enhance,async(req, res)=>{
+ const city = new City(req.body.city);
  try{
  await city.save();
  res.status(201).send(city);
@@ -36,29 +37,53 @@ router.post('/addCity', async(req, res)=>{
   }
 
  });
-
-router.delete('/deleteCity/:id', async(req, res)=>{
+//  router.delete('/:id', auth.enhance,async(req,res)=>{
+//   try{
+//     const showtime = await Showtime.findById(req.params.id)
+//     // const role = user.role
+//     const reser =await Reservation.find({showId:req.params.id})
+//     for (let item of reser){
+//       const reservation = await Reservation.findById(item.id)
+//       const u3 = await reservation.delete()
+//       console.log(reservation.showId)
+//     }
+//     const u1 = await showtime.delete()
+//     res.json('deleted showtime')
+//   }
+//   catch(err){
+//       res.send('error'+err)
+//   }
+// })
+router.delete('/deleteCity/:id', auth.enhance,async(req, res)=>{
     const _id = req.params.id;
     try {
+      const cinema=await Cinema.find({city:req.params.id})
       const city = await City.findByIdAndDelete(_id);
+      for(let item of cinema){
+        const cine=await Cinema.findById(item.id)
+        const u3=await cine.delete()
+        
+      }
       return !city ? res.sendStatus(404) : res.send(city);
     } catch (e) {
       return res.sendStatus(400);
     }
 })
 
-router.put('/updateCity/:id', async(req, res)=>{
+router.patch('/updateCity/:id', auth.enhance,async(req, res)=>{
     const _id = req.params.id;
-  const updates = Object.keys(req.body);
+  const updates = Object.keys(req.body.city);
     try{
-        const city = await City.findById(_id);
-        updates.forEach((update) => (movie[update] = req.body[update]));
-        await movie.save();
-        return !movie ? res.sendStatus(404) : res.send(movie);
+      const cite = await City.findOneAndUpdate({ _id:_id },req.body.city)
+        // const cite = await City.findById(_id);
+        // updates.forEach((update) => (movie[update] = req.body.city[update]));
+        // await cite.save();
+        return !cite ? res.sendStatus(404) : res.send(cite);
 }
 catch (e) {
     return res.sendStatus(400);
   }
 })
+
 
 module.exports = router;

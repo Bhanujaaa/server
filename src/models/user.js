@@ -7,10 +7,8 @@ const userSchema = Schema(
   {
     username: {
       type: String,
-      unique: true,
       required: true,
       trim: true,
-      lowercase: true,
     },
     email: {
       type: String,
@@ -30,16 +28,7 @@ const userSchema = Schema(
       default: 'guest',
       enum: ['guest', 'admin'],
     },
-
-    facebook: String,
-    google: String,
-
     phone: {
-      type: String,
-      unique: true,
-      trim: true,
-    },
-    imageurl: {
       type: String,
     },
     
@@ -50,9 +39,14 @@ const userSchema = Schema(
 
 userSchema.methods.generateAuthToken = async function() {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, 'mySecret');
+  const token = jwt.sign({ _id: user._id.toString() }, 'mySecret',{expiresIn: '60s'});
   return token;
 };
+userSchema.methods.generateRefreshToken=async function(){
+  const user=this;
+  const tokenRefresh=jwt.sign({ _id: user._id.toString()},'Refresh',{expiresIn:'1y'})
+  return tokenRefresh;
+}
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
